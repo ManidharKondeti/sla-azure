@@ -1,0 +1,25 @@
+spring:
+  # security:
+  #   oauth2:
+  #     client:
+  #       registration:
+  #         aad:
+  #           client-id: 779157a9-764d-4f02-b0d6-f22239696dfc
+  #           client-secret: i3c8Q~nIATHI-ZCk6I.NFS3VTF~Rck_FBAuntayq
+  #           scope: openid+profile+email
+  #           client-name: Login with AzureAD
+  #       provider:
+  #         aad:
+  #            issuer-uri: https://login.microsoftonline.com/25ac5117-6dd4-482b-bbd3-4322592c671c/v2.0
+  #            #logout-uri: https://login.microsoftonline.com/25ac5117-6dd4-482b-bbd3-4322592c671c/oauth2/v2.0/logout
+
+
+# Add this property to your existing configuration
+  datasource:
+    url: jdbc:sqlserver://slaticketmanagementsystem.database.windows.net:1433;database=SLATicketManagement
+    username: Admin123
+    password: Sla123Admin
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
+
+server:
+  port: 8080
