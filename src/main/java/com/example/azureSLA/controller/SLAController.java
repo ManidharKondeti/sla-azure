@@ -27,6 +27,12 @@ public class SLAController {
     @Autowired
     SLAService slaservice;
 
+
+    @GetMapping("/msg")
+    public String message(){
+        return "Testing the Azure Deployment";
+    }
+
     // @GetMapping("/user")
     // public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
 	// 	Map<String, Object> hm = new HashMap<String, Object>(); 
