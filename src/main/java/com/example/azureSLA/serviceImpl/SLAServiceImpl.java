@@ -2,6 +2,7 @@ package com.example.azureSLA.serviceImpl;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -133,7 +134,8 @@ public class SLAServiceImpl implements SLAService {
 
     @Override
     public Map<String, Integer> getTicketsCount() {
-        return null;
-        //Map<String, Integer> ticketsCountMap = new 
+        Map<String, Integer> ticketsCountMap = new HashMap<>();
+        ticketsCountMap = slarepository.getTicketsCount();
+        return ticketsCountMap;
     }
 }

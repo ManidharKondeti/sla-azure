@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.azure.core.annotation.Get;
 import com.example.azureSLA.model.Comments;
 import com.example.azureSLA.model.Priority;
 import com.example.azureSLA.model.TicketStatus;
@@ -34,19 +35,6 @@ public class SLAController {
     public String message(){
         return "Testing the Azure Deployment";
     }
-
-    // @GetMapping("/user")
-    // public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
-	// 	Map<String, Object> hm = new HashMap<String, Object>(); 
-	// 	hm.put("name", principal.getAttribute("name"));
-	// 	hm.put("email", principal.getAttribute("email"));
-    //     //saveUserDetails(principal);
-    //     return hm;
-    // }
-  
-    // public void saveUserDetails(@AuthenticationPrincipal OAuth2User principal){
-    //     slaservice.saveUserDetails(principal);
-    // }
 
     @PostMapping("/user/create")
     public Users createUser(@RequestBody Users user){

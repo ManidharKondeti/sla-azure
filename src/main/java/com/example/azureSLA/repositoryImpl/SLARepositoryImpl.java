@@ -8,7 +8,9 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -27,95 +29,6 @@ public class SLARepositoryImpl implements SLARepository {
 
     @Autowired
     private DataSource dataSource;
-
-    // @Override
-    // public void saveUserDetails(OAuth2User principal) throws SQLException {
-
-    // try (Connection connection = dataSource.getConnection()) {
-
-    // ResultSet result = findUser(principal.getAttribute("email"), connection);
-
-    // while (!result.next()) {
-
-    // String insertQuery = "INSERT INTO dbo.Users (FirstName, LastName, Email,
-    // Source) VALUES (?, ?, ?, ?)";
-    // String firstName = principal.getAttribute("given_name");
-    // String lastName = principal.getAttribute("family_name");
-    // String email = principal.getAttribute("email");
-    // String source = "Azure";
-
-    // try (PreparedStatement insertStatement =
-    // connection.prepareStatement(insertQuery)) {
-
-    // insertStatement.setString(1, firstName);
-    // insertStatement.setString(2, lastName);
-    // insertStatement.setString(3, email);
-    // insertStatement.setString(4, source);
-
-    // int rowsAffected = insertStatement.executeUpdate();
-    // // ResultSet insertResult = insertStatement.executeQuery();
-
-    // if (rowsAffected > 0) {
-    // ResultSet resultSet = findUser(email, connection);
-    // while (resultSet.next()) {
-    // int userId = resultSet.getInt("UserId");
-    // int roleId = 2;
-    // int resultUsrRole = insertUserRole(userId, roleId, connection);
-
-    // if (resultUsrRole > 0) {
-    // System.out.println("User default role is inserted successfully.");
-    // } else {
-    // System.out.println("Failed to insert user role.");
-    // }
-    // }
-    // } else {
-    // System.out.println("Failed to insert user.");
-    // }
-    // } catch (SQLException e) {
-    // e.printStackTrace();
-    // }
-    // }
-    // }
-    // }
-
-    // public int insertUserRole(int userId, int roleId, Connection connection) {
-    // int result = 0;
-    // String insertUserRoleQuery = "INSERT INTO dbo.UserRole (UserId, RoleId)
-    // VALUES (?, ?)";
-    // try (PreparedStatement insertUsrRoleStmnt =
-    // connection.prepareStatement(insertUserRoleQuery)) {
-
-    // insertUsrRoleStmnt.setInt(1, userId);
-    // insertUsrRoleStmnt.setInt(2, roleId);
-
-    // int rowsAffected = insertUsrRoleStmnt.executeUpdate();
-
-    // if (rowsAffected > 0) {
-    // result = 1;
-    // System.out.println("User inserted successfully.");
-    // } else {
-    // System.out.println("Failed to insert user.");
-    // }
-    // } catch (SQLException e) {
-    // e.printStackTrace();
-    // }
-    // return result;
-
-    // }
-
-    // public ResultSet findUser(String email, Connection connection) {
-    // ResultSet result = null;
-    // String findUser = "select * FROM dbo.Users where Email = ?";
-    // try {
-    // PreparedStatement preparedStatement = connection.prepareStatement(findUser);
-    // preparedStatement.setString(1, email);
-    // result = preparedStatement.executeQuery();
-
-    // } catch (SQLException e) {
-    // e.printStackTrace();
-    // }
-    // return result;
-    // }
 
     @Override
     public Tickets createTicket(Tickets ticket) {
@@ -687,5 +600,31 @@ public class SLARepositoryImpl implements SLARepository {
             e.printStackTrace();
         }
         return resultList;
+    }
+
+    @Override
+    public Map<String, Integer> getTicketsCount() {
+        String query = "SELECT sl.Description AS Status, COUNT(*) AS TicketCount " +
+                   "FROM dbo.Tickets t " +
+                   "JOIN dbo.StatusLookup sl ON t.StatusId = sl.StatusId " +
+                   "GROUP BY sl.Description";
+
+    Map<String, Integer> ticketCounts = new HashMap<>();
+
+    try (Connection connection = dataSource.getConnection();
+         PreparedStatement preparedStatement = connection.prepareStatement(query);
+         ResultSet resultSet = preparedStatement.executeQuery()) {
+
+        while (resultSet.next()) {
+            String status = resultSet.getString("Status");
+            int count = resultSet.getInt("TicketCount");
+            ticketCounts.put(status, count);
+        }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
+    }
+
+    return ticketCounts;
     }
 }
