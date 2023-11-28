@@ -38,5 +38,7 @@ public interface SLARepository {
     List<Priority> getPriorities();
 
     Map<String, Integer> getTicketsCount();
+
+    List<Users> getUsers();
     
 }

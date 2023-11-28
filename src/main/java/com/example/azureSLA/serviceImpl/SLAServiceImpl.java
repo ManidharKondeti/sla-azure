@@ -138,4 +138,11 @@ public class SLAServiceImpl implements SLAService {
         ticketsCountMap = slarepository.getTicketsCount();
         return ticketsCountMap;
     }
+
+    @Override
+    public List<Users> getUsers() {
+        List<Users> userList = new ArrayList<>();
+        userList = slarepository.getUsers();
+        return userList;
+    }
 }

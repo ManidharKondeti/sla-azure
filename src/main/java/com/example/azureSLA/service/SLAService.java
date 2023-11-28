@@ -27,5 +27,6 @@ public interface SLAService {
     List<TicketStatus> getStatus();
     List<Priority> getPriorities();
     Map<String, Integer> getTicketsCount();
+    List<Users> getUsers();
     
 }

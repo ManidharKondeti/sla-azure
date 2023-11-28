@@ -38,6 +38,7 @@ public class SLAController {
         return "Testing the Azure Deployment";
     }
 
+    @CrossOrigin(origins = "http://localhost:4200/")
     @PostMapping("/user/create")
     public Users createUser(@RequestBody Users user){
         Users createUser = new Users();
@@ -165,7 +166,7 @@ public class SLAController {
         try{
            statusList = slaservice.getStatus();
         }catch (Exception e) {
-             System.err.println("Error in fetching Tickets count from  repository" + e.getMessage());
+             System.err.println("Error in fetching Status from  repository" + e.getMessage());
         }
         return statusList;
     }
@@ -176,9 +177,20 @@ public class SLAController {
         try{
            priorityList = slaservice.getPriorities();
         }catch (Exception e) {
-             System.err.println("Error in fetching Tickets count from  repository" + e.getMessage());
+             System.err.println("Error in fetching Priorites from  repository" + e.getMessage());
         }
         return priorityList;
+    }
+
+    @GetMapping("/user/getAll")
+    public List<Users> getUsers(){
+        List<Users> usersList = new ArrayList<>();
+        try{
+           usersList = slaservice.getUsers();
+        }catch (Exception e) {
+             System.err.println("Error in fetching users from  repository" + e.getMessage());
+        }
+        return usersList;
     }
 
     //tickets created by

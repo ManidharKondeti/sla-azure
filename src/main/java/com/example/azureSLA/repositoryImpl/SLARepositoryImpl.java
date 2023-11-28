@@ -627,4 +627,33 @@ public class SLARepositoryImpl implements SLARepository {
 
     return ticketCounts;
     }
+
+    @Override
+    public List<Users> getUsers() {
+         List<Users> usersList = new ArrayList<>();
+        String userListQuery = "SELECT * from dbo.Users";
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(userListQuery)) {
+           
+            ResultSet result = preparedStatement.executeQuery();
+            while (result.next()) {
+                Users user = new Users();
+                user.setUserId(result.getInt("userId"));
+                user.setFirstName(result.getString("firstName"));
+                user.setLastName(result.getString("lastName"));
+                user.setAddress(result.getString("address"));
+                user.setAdmin(result.getBoolean("isAdmin"));
+                user.setCity(result.getString("city"));
+                user.setEmail(result.getString("email"));
+                user.setPhone(result.getString("phone"));
+
+                
+                usersList.add(user);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return usersList;
+        
+    }
 }
