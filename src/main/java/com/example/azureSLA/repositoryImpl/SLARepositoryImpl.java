@@ -336,13 +336,14 @@ public class SLARepositoryImpl implements SLARepository {
 
     @Override
     public void updAssignTo(int ticketId, int assginUserId) {
-        String updStatusQuery = "UPDATE dbo.Tickets SET AssignedTo = ? where TicketId = ?";
+        String updStatusQuery = "UPDATE dbo.Tickets SET StatusId= ? , AssignedTo = ?  where TicketId = ?";
 
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(updStatusQuery)) {
 
-            preparedStatement.setInt(1, assginUserId);
-            preparedStatement.setInt(2, ticketId);
+            preparedStatement.setInt(1, 2);//changing to inprogress
+            preparedStatement.setInt(2, assginUserId);
+            preparedStatement.setInt(3, ticketId);
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
