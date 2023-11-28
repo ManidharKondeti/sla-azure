@@ -16,6 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 
 import com.example.azureSLA.model.Comments;
+import com.example.azureSLA.model.Priority;
+import com.example.azureSLA.model.TicketStatus;
 import com.example.azureSLA.model.Tickets;
 import com.example.azureSLA.model.Users;
 import com.example.azureSLA.repository.SLARepository;
@@ -125,10 +127,10 @@ public class SLARepositoryImpl implements SLARepository {
 
             preparedStatement.setString(1, ticket.getTitle());
             preparedStatement.setString(2, ticket.getDescription());
-            preparedStatement.setInt(3, ticket.getStatusId());
+            preparedStatement.setInt(3, 1);
             preparedStatement.setInt(4, ticket.getPriorityId());
             preparedStatement.setInt(5, ticket.getCreatedby());
-            preparedStatement.setInt(6, ticket.getAssignedTo());
+            preparedStatement.setInt(6, 2);//AdminId
 
             Date createdDate = new Date();
             java.sql.Timestamp sqlCreatedDate = convertDate(createdDate);
@@ -169,10 +171,37 @@ public class SLARepositoryImpl implements SLARepository {
     @Override
     public List<Tickets> getTicketDetails() {
         List<Tickets> resultList = new ArrayList<>();
-        String getTicketsQuery = "SELECT * FROM dbo.Tickets";
+        //String getTicketsQuery = "SELECT * FROM dbo.Tickets";
+        String getAllTicketsQuery = "SELECT " +
+                "    t.TicketId," +
+                "    t.Title, " +
+                "    t.Description," +
+                "    t.StatusId," +
+                "    sl.Description AS Status," +
+                "    t.PriorityId," +
+                "    pl.Description AS Priority," +
+                "    t.CreatedBy," +
+                "    u.FirstName AS CreatedByFirstName," +
+                "    u.LastName AS CreatedByLastName," +
+                "    t.AssignedTo," +
+                "    u2.FirstName AS AssignedToFirstName," +
+                "    u2.LastName AS AssignedToLastName," +
+                "    t.CreatedAt," +
+                "    t.DueDate," +
+                "    t.isEmailSent" +
+                "    FROM" +
+                "    dbo.Tickets t " +
+                " JOIN" +
+                "    dbo.StatusLookup sl ON t.StatusId = sl.StatusId" +
+                " JOIN " +
+                "    dbo.PriorityLookup pl ON t.PriorityId = pl.PriorityId" +
+                " JOIN " +
+                "    dbo.Users u ON t.CreatedBy = u.UserId" +
+                " JOIN " +
+                "    dbo.Users u2 ON t.AssignedTo = u2.UserId" ;
 
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(getTicketsQuery)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(getAllTicketsQuery)) {
             ResultSet result = preparedStatement.executeQuery();
             while (result.next()) {
                 Tickets ticket = new Tickets();
@@ -180,9 +209,15 @@ public class SLARepositoryImpl implements SLARepository {
                 ticket.setTitle(result.getString("title"));
                 ticket.setDescription(result.getString("description"));
                 ticket.setStatusId(result.getInt("statusId"));
+                ticket.setStatus(result.getString("Status"));
                 ticket.setPriorityId(result.getInt("priorityId"));
+                ticket.setPriority(result.getString("Priority"));
                 ticket.setCreatedby(result.getInt("createdby"));
+                ticket.setCreatedByFirstName(result.getString("createdByFirstName"));
+                ticket.setCreatedByLastName(result.getString("createdByLastName"));
                 ticket.setAssignedTo(result.getInt("assignedTo"));
+                ticket.setAssignedToFirstName(result.getString("assignedToFirstName"));
+                ticket.setAssignedToLastName(result.getString("assignedToLastName"));
                 ticket.setCreatedAt(result.getTimestamp("createdAt"));
                 ticket.setDueDate(result.getTimestamp("dueDate"));
                 ticket.setEmailSent(result.getBoolean("isEmailSent"));
@@ -202,10 +237,38 @@ public class SLARepositoryImpl implements SLARepository {
     @Override
     public List<Tickets> getTicketsByStatusId(int id) {
         List<Tickets> resultList = new ArrayList<>();
-        String getTicketDetailsById = "SELECT * FROM dbo.Tickets where StatusId = ?";
+        //String getTicketDetailsById = "SELECT * FROM dbo.Tickets where StatusId = ?";
+        String getTicketsByStatusIdQuery = "SELECT " +
+                "    t.TicketId," +
+                "    t.Title, " +
+                "    t.Description," +
+                "    t.StatusId," +
+                "    sl.Description AS Status," +
+                "    t.PriorityId," +
+                "    pl.Description AS Priority," +
+                "    t.CreatedBy," +
+                "    u.FirstName AS CreatedByFirstName," +
+                "    u.LastName AS CreatedByLastName," +
+                "    t.AssignedTo," +
+                "    u2.FirstName AS AssignedToFirstName," +
+                "    u2.LastName AS AssignedToLastName," +
+                "    t.CreatedAt," +
+                "    t.DueDate," +
+                "    t.isEmailSent" +
+                "    FROM" +
+                "    dbo.Tickets t " +
+                " JOIN" +
+                "    dbo.StatusLookup sl ON t.StatusId = sl.StatusId" +
+                " JOIN " +
+                "    dbo.PriorityLookup pl ON t.PriorityId = pl.PriorityId" +
+                " JOIN " +
+                "    dbo.Users u ON t.CreatedBy = u.UserId" +
+                " JOIN " +
+                "    dbo.Users u2 ON t.AssignedTo = u2.UserId" +
+                " WHERE t.StatusId= ?";
 
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(getTicketDetailsById)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(getTicketsByStatusIdQuery)) {
             preparedStatement.setInt(1, id);
             ResultSet result = preparedStatement.executeQuery();
             while (result.next()) {
@@ -214,9 +277,15 @@ public class SLARepositoryImpl implements SLARepository {
                 ticket.setTitle(result.getString("title"));
                 ticket.setDescription(result.getString("description"));
                 ticket.setStatusId(result.getInt("statusId"));
+                ticket.setStatus(result.getString("Status"));
                 ticket.setPriorityId(result.getInt("priorityId"));
+                ticket.setPriority(result.getString("Priority"));
                 ticket.setCreatedby(result.getInt("createdby"));
+                ticket.setCreatedByFirstName(result.getString("createdByFirstName"));
+                ticket.setCreatedByLastName(result.getString("createdByLastName"));
                 ticket.setAssignedTo(result.getInt("assignedTo"));
+                ticket.setAssignedToFirstName(result.getString("assignedToFirstName"));
+                ticket.setAssignedToLastName(result.getString("assignedToLastName"));
                 ticket.setCreatedAt(result.getTimestamp("createdAt"));
                 ticket.setDueDate(result.getTimestamp("dueDate"));
                 ticket.setEmailSent(result.getBoolean("isEmailSent"));
@@ -235,12 +304,12 @@ public class SLARepositoryImpl implements SLARepository {
     private List<Comments> getCommentsForTicket(int ticketId) {
         List<Comments> commentsList = new ArrayList<>();
         String getCommentsQuery = "SELECT c.CommentId, c.TicketId, c.CommentText, c.CreatedBy," +
-                                  "u.FirstName AS CreatedByFirstName,u.LastName AS CreatedByLastName,"+
-                                  " c.CreatedAt FROM Comments c " +
-                                  "JOIN "+
-                                  " dbo.Users u ON c.CreatedBy = u.UserId "+
-                                  "WHERE "+
-                                  "c.TicketId = ?";
+                "u.FirstName AS CreatedByFirstName,u.LastName AS CreatedByLastName," +
+                " c.CreatedAt FROM Comments c " +
+                "JOIN " +
+                " dbo.Users u ON c.CreatedBy = u.UserId " +
+                "WHERE " +
+                "c.TicketId = ?";
 
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(getCommentsQuery)) {
@@ -328,18 +397,18 @@ public class SLARepositoryImpl implements SLARepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        //return ticket;
+        // return ticket;
     }
 
     @Override
-    public Tickets updStatus(int statusId, Tickets ticket) {
+    public void updStatus(int ticketId, int statusId) {
         String updStatusQuery = "UPDATE dbo.Tickets SET StatusId = ? where TicketId = ?";
 
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(updStatusQuery)) {
 
             preparedStatement.setInt(1, statusId);
-            preparedStatement.setInt(2, ticket.getTicketId());
+            preparedStatement.setInt(2, ticketId);
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
@@ -350,18 +419,17 @@ public class SLARepositoryImpl implements SLARepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return ticket;
     }
 
     @Override
-    public Tickets updAssignTo(int userId, Tickets ticket) {
+    public void updAssignTo(int ticketId, int assginUserId) {
         String updStatusQuery = "UPDATE dbo.Tickets SET AssignedTo = ? where TicketId = ?";
 
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(updStatusQuery)) {
 
-            preparedStatement.setInt(1, userId);
-            preparedStatement.setInt(2, ticket.getTicketId());
+            preparedStatement.setInt(1, assginUserId);
+            preparedStatement.setInt(2, ticketId);
 
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
@@ -372,17 +440,44 @@ public class SLARepositoryImpl implements SLARepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return ticket;
     }
 
     @Override
     public List<Tickets> getTicketsAssignedTo(int assignedTo) {
 
         List<Tickets> resultList = new ArrayList<>();
-        String getTicketDetailsById = "SELECT * FROM dbo.Tickets where AssignedTo = ?";
+        //String getTicketDetailsById = "SELECT * FROM dbo.Tickets where AssignedTo = ?";
+        String getTicketsAssignedToQuery = "SELECT " +
+                "    t.TicketId," +
+                "    t.Title, " +
+                "    t.Description," +
+                "    t.StatusId," +
+                "    sl.Description AS Status," +
+                "    t.PriorityId," +
+                "    pl.Description AS Priority," +
+                "    t.CreatedBy," +
+                "    u.FirstName AS CreatedByFirstName," +
+                "    u.LastName AS CreatedByLastName," +
+                "    t.AssignedTo," +
+                "    u2.FirstName AS AssignedToFirstName," +
+                "    u2.LastName AS AssignedToLastName," +
+                "    t.CreatedAt," +
+                "    t.DueDate," +
+                "    t.isEmailSent" +
+                "    FROM" +
+                "    dbo.Tickets t " +
+                " JOIN" +
+                "    dbo.StatusLookup sl ON t.StatusId = sl.StatusId" +
+                " JOIN " +
+                "    dbo.PriorityLookup pl ON t.PriorityId = pl.PriorityId" +
+                " JOIN " +
+                "    dbo.Users u ON t.CreatedBy = u.UserId" +
+                " JOIN " +
+                "    dbo.Users u2 ON t.AssignedTo = u2.UserId" +
+                " WHERE t.AssignedTo= ?";
 
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(getTicketDetailsById)) {
+                PreparedStatement preparedStatement = connection.prepareStatement(getTicketsAssignedToQuery)) {
             preparedStatement.setInt(1, assignedTo);
             ResultSet result = preparedStatement.executeQuery();
             while (result.next()) {
@@ -391,9 +486,15 @@ public class SLARepositoryImpl implements SLARepository {
                 ticket.setTitle(result.getString("title"));
                 ticket.setDescription(result.getString("description"));
                 ticket.setStatusId(result.getInt("statusId"));
+                ticket.setStatus(result.getString("Status"));
                 ticket.setPriorityId(result.getInt("priorityId"));
+                ticket.setPriority(result.getString("Priority"));
                 ticket.setCreatedby(result.getInt("createdby"));
+                ticket.setCreatedByFirstName(result.getString("createdByFirstName"));
+                ticket.setCreatedByLastName(result.getString("createdByLastName"));
                 ticket.setAssignedTo(result.getInt("assignedTo"));
+                ticket.setAssignedToFirstName(result.getString("assignedToFirstName"));
+                ticket.setAssignedToLastName(result.getString("assignedToLastName"));
                 ticket.setCreatedAt(result.getTimestamp("createdAt"));
                 ticket.setDueDate(result.getTimestamp("dueDate"));
                 ticket.setEmailSent(result.getBoolean("isEmailSent"));
@@ -412,33 +513,33 @@ public class SLARepositoryImpl implements SLARepository {
     @Override
     public List<Tickets> getTicketsCreatedBy(int getTicketsCreatedBy) {
         List<Tickets> resultList = new ArrayList<>();
-        String ticketsCreatedByQuery = "SELECT " + 
-                "    t.TicketId," + 
+        String ticketsCreatedByQuery = "SELECT " +
+                "    t.TicketId," +
                 "    t.Title, " +
-                "    t.Description," + 
-                "    t.StatusId," + 
-                "    sl.Description AS Status," + 
-                "    t.PriorityId," + 
+                "    t.Description," +
+                "    t.StatusId," +
+                "    sl.Description AS Status," +
+                "    t.PriorityId," +
                 "    pl.Description AS Priority," +
-                "    t.CreatedBy," + 
+                "    t.CreatedBy," +
                 "    u.FirstName AS CreatedByFirstName," +
                 "    u.LastName AS CreatedByLastName," +
                 "    t.AssignedTo," +
-                "    u2.FirstName AS AssignedToFirstName," + 
-                "    u2.LastName AS AssignedToLastName," + 
+                "    u2.FirstName AS AssignedToFirstName," +
+                "    u2.LastName AS AssignedToLastName," +
                 "    t.CreatedAt," +
-                "    t.DueDate," + 
+                "    t.DueDate," +
                 "    t.isEmailSent" +
-                "    FROM" + 
+                "    FROM" +
                 "    dbo.Tickets t " +
-                " JOIN" + 
+                " JOIN" +
                 "    dbo.StatusLookup sl ON t.StatusId = sl.StatusId" +
-                " JOIN " + 
+                " JOIN " +
                 "    dbo.PriorityLookup pl ON t.PriorityId = pl.PriorityId" +
                 " JOIN " +
                 "    dbo.Users u ON t.CreatedBy = u.UserId" +
                 " JOIN " +
-                "    dbo.Users u2 ON t.AssignedTo = u2.UserId" + 
+                "    dbo.Users u2 ON t.AssignedTo = u2.UserId" +
                 " WHERE t.CreatedBy= ?";
 
         try (Connection connection = dataSource.getConnection();
@@ -477,7 +578,7 @@ public class SLARepositoryImpl implements SLARepository {
 
     @Override
     public Users createUser(Users user) {
-        int createdUserId=0;
+        int createdUserId = 0;
         String createUserQuery = "INSERT INTO dbo.Users (FirstName, LastName, Address, City, Phone, Email, Password, IsAdmin, Fine) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)";
 
@@ -493,39 +594,38 @@ public class SLARepositoryImpl implements SLARepository {
             preparedStatement.setString(7, user.getPswrd());
             preparedStatement.setBoolean(8, false);
             preparedStatement.setInt(9, 0);
-            
+
             int rowsAffected = preparedStatement.executeUpdate();
             if (rowsAffected > 0) {
                 System.out.println("The User has been created successfully ");
 
-        // Retrieve the newly created user by querying the database
-        String selectUserQuery = "SELECT * FROM dbo.Users WHERE Email = ?";
-        try (PreparedStatement selectStatement = connection.prepareStatement(selectUserQuery)) {
-            selectStatement.setString(1, user.getEmail());
-            try (ResultSet resultSet = selectStatement.executeQuery()) {
-                if (resultSet.next()) {
-                    createdUserId = resultSet.getInt("UserId");
-                    // Set other properties of the user if needed
-                    user.setUserId(createdUserId);
-                } else {
-                    throw new RuntimeException("Failed to retrieve the newly created user");
+                // Retrieve the newly created user by querying the database
+                String selectUserQuery = "SELECT * FROM dbo.Users WHERE Email = ?";
+                try (PreparedStatement selectStatement = connection.prepareStatement(selectUserQuery)) {
+                    selectStatement.setString(1, user.getEmail());
+                    try (ResultSet resultSet = selectStatement.executeQuery()) {
+                        if (resultSet.next()) {
+                            createdUserId = resultSet.getInt("UserId");
+                            user.setUserId(createdUserId);
+                        } else {
+                            throw new RuntimeException("Failed to retrieve the newly created user");
+                        }
+                    }
                 }
-            }
-        }
 
-        int rowCount = insertUserRole(createdUserId);
-        
+                int rowCount = insertUserRole(createdUserId);
+
             } else {
                 System.out.println("There is an issue in creating user");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return user;   
+        return user;
     }
 
     private int insertUserRole(int createdUserId) {
-        int rowCount =0;
+        int rowCount = 0;
         String createUserRoleQuery = "INSERT INTO dbo.UserRole (UserId, RoleId) VALUES (?,?)";
 
         try (Connection connection = dataSource.getConnection();
@@ -544,5 +644,48 @@ public class SLARepositoryImpl implements SLARepository {
             e.printStackTrace();
         }
         return rowCount;
+    }
+
+    @Override
+    public List<TicketStatus> getStatus() {
+        List<TicketStatus> resultList = new ArrayList<>();
+        String getStatusQuery = "SELECT * from dbo.StatusLookup";
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(getStatusQuery)) {
+           
+            ResultSet result = preparedStatement.executeQuery();
+            while (result.next()) {
+                TicketStatus status = new TicketStatus();
+                status.setStatusId(result.getInt("statusId"));
+                status.setDescription(result.getString("description"));
+                
+                resultList.add(status);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultList;
+    }
+
+
+    @Override
+    public List<Priority> getPriorities() {
+        List<Priority> resultList = new ArrayList<>();
+        String getPrioritiesQuery = "SELECT * from dbo.PriorityLookup";
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(getPrioritiesQuery)) {
+           
+            ResultSet result = preparedStatement.executeQuery();
+            while (result.next()) {
+                Priority priority = new Priority();
+                priority.setPriorityId(result.getInt("priorityId"));
+                priority.setDescription(result.getString("description"));
+                
+                resultList.add(priority);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return resultList;
     }
 }

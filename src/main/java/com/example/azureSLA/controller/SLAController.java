@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.example.azureSLA.model.Comments;
+import com.example.azureSLA.model.Priority;
+import com.example.azureSLA.model.TicketStatus;
 import com.example.azureSLA.model.Tickets;
 import com.example.azureSLA.model.Users;
 import com.example.azureSLA.service.SLAService;
@@ -33,19 +35,6 @@ public class SLAController {
         return "Testing the Azure Deployment";
     }
 
-    // @GetMapping("/user")
-    // public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
-	// 	Map<String, Object> hm = new HashMap<String, Object>(); 
-	// 	hm.put("name", principal.getAttribute("name"));
-	// 	hm.put("email", principal.getAttribute("email"));
-    //     //saveUserDetails(principal);
-    //     return hm;
-    // }
-  
-    // public void saveUserDetails(@AuthenticationPrincipal OAuth2User principal){
-    //     slaservice.saveUserDetails(principal);
-    // }
-
     @PostMapping("/user/create")
     public Users createUser(@RequestBody Users user){
         Users createUser = new Users();
@@ -56,7 +45,6 @@ public class SLAController {
         }
         return createUser;
     }
-
 
     @PostMapping("/ticket/create")
     public Tickets createTicket(@RequestBody Tickets tickets){
@@ -69,7 +57,6 @@ public class SLAController {
         return createTicket;
     }
 
-    //getAll
     @GetMapping("/ticket/getAll")
     public List<Tickets> getTicketDetails(){
         List<Tickets> allTickets = new ArrayList<>();
@@ -115,8 +102,6 @@ public class SLAController {
         return ticketsCreatedBy;
     }
 
-    //getTicketsCreatedBy
-
 
     @PostMapping("/ticket/addcomment")
     public Comments addComments(@RequestBody Comments comment){
@@ -130,42 +115,65 @@ public class SLAController {
     }
 
 
-    //only priorityId and ticketId will be the parameters
     @PatchMapping("/ticket/{ticketId}/priority/{priorityId}")
     public void updPriority(@PathVariable int ticketId, @PathVariable int priorityId){
-         //Tickets updPriority = new Tickets();
         try {
-            //updPriority = slaservice.updPriority(ticketId,priorityId);
             slaservice.updPriority(ticketId,priorityId);
         } catch (Exception e) {
             System.err.println("Error in Creating a new Ticket in repository" + e.getMessage());
         }
-        //return updPriority;
     }
 
-    //only statusId and ticketId will be the parameters
-    //tickets/changeStatus
     @PatchMapping("/ticket/{ticketId}/status/{statusId}")
-    public Tickets updStatus(@PathVariable int statusId, @RequestBody Tickets tickets){
-         Tickets updStatus = new Tickets();
+    public void updStatus(@PathVariable int ticketId, @PathVariable int statusId){
         try {
-            updStatus = slaservice.updStatus(statusId,tickets);
+            slaservice.updStatus(ticketId,statusId);
         } catch (Exception e) {
             System.err.println("Error in Creating a new Ticket in repository" + e.getMessage());
         }
-        return updStatus;
     }
 
-    //assginUserId, ticketId
-    @PatchMapping("ticket/{ticketId}/updassignTo/{userId}")
-    public Tickets updAssignTo(@PathVariable int userId, @RequestBody Tickets tickets){
-         Tickets updAssignTo = new Tickets();
+    @PatchMapping("ticket/{ticketId}/updassignTo/{assginUserId}")
+    public void updAssignTo(@PathVariable int ticketId, @PathVariable int assginUserId){
         try {
-            updAssignTo = slaservice.updAssignTo(userId,tickets);
+           slaservice.updAssignTo(ticketId,assginUserId);
         } catch (Exception e) {
             System.err.println("Error in Creating a new Ticket in repository" + e.getMessage());
         }
-        return updAssignTo;
+    }
+
+    @GetMapping("/getTicketsCount")
+    public Map<String, Integer> getTicketsCount(){
+        Map<String, Integer> ticketsCountMap = new HashMap<>();
+        try {
+            ticketsCountMap = slaservice.getTicketsCount();
+        } catch (Exception e) {
+             System.err.println("Error in fetching Tickets count from  repository" + e.getMessage());
+        }
+        return ticketsCountMap;
+    }
+
+    //display the status
+    @GetMapping("/getStatus")
+    public List<TicketStatus> getStatus(){
+        List<TicketStatus> statusList = new ArrayList<>();
+        try{
+           statusList = slaservice.getStatus();
+        }catch (Exception e) {
+             System.err.println("Error in fetching Tickets count from  repository" + e.getMessage());
+        }
+        return statusList;
+    }
+
+    @GetMapping("/getPriority")
+    public List<Priority> getPriorities(){
+        List<Priority> priorityList = new ArrayList<>();
+        try{
+           priorityList = slaservice.getPriorities();
+        }catch (Exception e) {
+             System.err.println("Error in fetching Tickets count from  repository" + e.getMessage());
+        }
+        return priorityList;
     }
 
     //tickets created by

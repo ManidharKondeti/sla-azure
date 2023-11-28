@@ -3,12 +3,15 @@ package com.example.azureSLA.serviceImpl;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 //import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import com.example.azureSLA.model.Comments;
+import com.example.azureSLA.model.Priority;
+import com.example.azureSLA.model.TicketStatus;
 import com.example.azureSLA.model.Tickets;
 import com.example.azureSLA.model.Users;
 import com.example.azureSLA.repository.SLARepository;
@@ -69,35 +72,22 @@ public class SLAServiceImpl implements SLAService {
 
     @Override
     public void updPriority(int ticketId,int priorityId) {
-        //Tickets updPriority = new Tickets();
         if (ticketId != 0 && priorityId !=0) {
-            //updPriority = slarepository.updPriority(ticketId,priorityId);
             slarepository.updPriority(ticketId,priorityId);
-            //return updPriority;
-        } else {
-            //return updPriority;
         }
     }
 
     @Override
-    public Tickets updStatus(int statusId, Tickets ticket) {
-        Tickets updStatus = new Tickets();
-        if (ticket != null) {
-            updStatus = slarepository.updStatus(statusId,ticket);
-            return updStatus;
-        } else {
-            return updStatus;
+    public void updStatus(int ticketId, int statusId) {
+        if (ticketId != 0 && statusId !=0) {
+            slarepository.updStatus(ticketId, statusId);
         }
     }
 
     @Override
-    public Tickets updAssignTo(int userId, Tickets ticket) {
-        Tickets updAssignTo = new Tickets();
-        if (ticket != null) {
-            updAssignTo = slarepository.updAssignTo(userId,ticket);
-            return updAssignTo;
-        } else {
-            return updAssignTo;
+    public void updAssignTo(int ticketId, int assginUserId) {
+       if (ticketId != 0 && assginUserId !=0) {
+           slarepository.updAssignTo(ticketId,assginUserId);
         }
     }
 
@@ -125,5 +115,25 @@ public class SLAServiceImpl implements SLAService {
             return createUser;
         }
     }
+
+    @Override
+    public List<TicketStatus> getStatus() {
+        List<TicketStatus> list= new ArrayList<>();
+        list= slarepository.getStatus();
+        return list;
+    }
     
+
+    @Override
+    public List<Priority> getPriorities() {
+        List<Priority> list= new ArrayList<>();
+        list= slarepository.getPriorities();
+        return list;
+    }
+
+    @Override
+    public Map<String, Integer> getTicketsCount() {
+        return null;
+        //Map<String, Integer> ticketsCountMap = new 
+    }
 }
