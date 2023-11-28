@@ -26,7 +26,7 @@ import com.example.azureSLA.service.SLAService;
 
 @RestController
 @RequestMapping("/sla")
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "http://localhost:4200")
 public class SLAController {
 
     @Autowired
