@@ -49,6 +49,8 @@ public class SLAController {
         return createUser;
     }
 
+    
+    @CrossOrigin(origins = "http://localhost:4200/")
     @PostMapping("/ticket/create")
     public Tickets createTicket(@RequestBody Tickets tickets){
         Tickets createTicket = new Tickets();

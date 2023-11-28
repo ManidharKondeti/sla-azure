@@ -604,9 +604,9 @@ public class SLARepositoryImpl implements SLARepository {
 
     @Override
     public Map<String, Integer> getTicketsCount() {
-        String query = "SELECT sl.Description AS Status, COUNT(*) AS TicketCount " +
+        String query = "SELECT sl.Description AS Status, COUNT(t.TicketId) AS TicketCount " +
                    "FROM dbo.Tickets t " +
-                   "JOIN dbo.StatusLookup sl ON t.StatusId = sl.StatusId " +
+                   "RIGHT JOIN dbo.StatusLookup sl ON t.StatusId = sl.StatusId " +
                    "GROUP BY sl.Description";
 
     Map<String, Integer> ticketCounts = new HashMap<>();
