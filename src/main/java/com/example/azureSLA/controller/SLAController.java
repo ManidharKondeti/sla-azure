@@ -35,6 +35,19 @@ public class SLAController {
         return "Testing the Azure Deployment";
     }
 
+    // @GetMapping("/user")
+    // public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
+	// 	Map<String, Object> hm = new HashMap<String, Object>(); 
+	// 	hm.put("name", principal.getAttribute("name"));
+	// 	hm.put("email", principal.getAttribute("email"));
+    //     //saveUserDetails(principal);
+    //     return hm;
+    // }
+  
+    // public void saveUserDetails(@AuthenticationPrincipal OAuth2User principal){
+    //     slaservice.saveUserDetails(principal);
+    // }
+
     @PostMapping("/user/create")
     public Users createUser(@RequestBody Users user){
         Users createUser = new Users();
