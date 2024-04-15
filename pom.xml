@@ -85,6 +85,18 @@
 			<artifactId>azure-storage-blob</artifactId>
 			<version>12.14.0</version>
 		</dependency>
+        <!-- Adding the application insights dependency-->
+		<dependency>
+			<groupId>com.microsoft.azure</groupId>
+			<artifactId>applicationinsights-runtime-attach</artifactId>
+			<version>3.5.1</version>
+		</dependency>
+        <dependency>
+            <groupId>com.microsoft.azure</groupId>
+            <artifactId>applicationinsights-core</artifactId>
+            <version>3.5.1</version>
+        </dependency>
+
 	</dependencies>
 
 	<build>

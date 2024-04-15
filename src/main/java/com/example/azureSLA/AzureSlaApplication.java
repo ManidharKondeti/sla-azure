@@ -1,5 +1,7 @@
 package com.example.azureSLA;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -9,6 +11,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
@@ -26,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobContainerClientBuilder;
 import com.azure.storage.blob.BlobServiceClientBuilder;
+import com.microsoft.applicationinsights.attach.ApplicationInsights;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -33,9 +37,41 @@ import jakarta.servlet.http.HttpServletRequest;
 @SpringBootApplication
 public class AzureSlaApplication {
 
+
+	// public static void configureApplicationInsights() {
+    //     Properties properties = new Properties();
+    //     try (InputStream inputStream = AzureSlaApplication.class.getClassLoader().getResourceAsStream("connection-string-file.txt")) {
+    //         if (inputStream != null) {
+    //             properties.load(inputStream);
+    //             String instrumentationKey = properties.getProperty("InstrumentationKey");
+    //             if (instrumentationKey != null && !instrumentationKey.isEmpty()) {
+    //                 System.setProperty("APPLICATION_INSIGHTS_CONNECTION_STRING", "InstrumentationKey=" + instrumentationKey);
+    //             } else {
+    //                 throw new IllegalArgumentException("Instrumentation key not found in connection-string-file.txt");
+    //             }
+    //         } else {
+    //             throw new IOException("connection-string-file.txt not found in classpath");
+    //         }
+    //     } catch (IOException e) {
+    //         throw new IllegalStateException("Error loading connection string from file", e);
+    //     }
+    // }
+
 	public static void main(String[] args) {
+		//configureApplicationInsights();
+		ApplicationInsights.attach();
 		SpringApplication.run(AzureSlaApplication.class, args);
+		
+
 	}
+
+	// public static void main(String[] args) {
+    //     System.setProperty("applicationinsights.runtime-attach.configuration.classpath.file", "applicationinsights.json");
+    // 	ApplicationInsights.attach();
+    //     SpringApplication.run(AzureSlaApplication.class, args);
+    // }
+
+
 }
 // 	@GetMapping("/user")
 //     public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
