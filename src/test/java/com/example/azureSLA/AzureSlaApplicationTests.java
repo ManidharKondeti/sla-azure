@@ -10,4 +10,5 @@ class AzureSlaApplicationTests {
 	void contextLoads() {
 	}
 
+	
 }
