@@ -1,6 +1,7 @@
 package com.example.azureSLA.repositoryImpl;
 
 import java.sql.Connection;
+import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -493,51 +494,76 @@ public class SLARepositoryImpl implements SLARepository {
     @Override
     public Users createUser(Users user) {
         int createdUserId = 0;
+        String selectUserByEmailQuery = "SELECT * FROM dbo.Users WHERE Email = ?";
         String createUserQuery = "INSERT INTO dbo.Users (FirstName, LastName, Address, City, Phone, Email, Password, IsAdmin, Fine) "
                 + "VALUES (?, ?, ?, ?, ?, ?, ?, ?,?)";
 
         try (Connection connection = dataSource.getConnection();
-                PreparedStatement preparedStatement = connection.prepareStatement(createUserQuery)) {
+                PreparedStatement selectStatement = connection.prepareStatement(selectUserByEmailQuery)) {
+            selectStatement.setString(1, user.getEmail());
+            try (ResultSet resultSet = selectStatement.executeQuery()) {
+                if (resultSet.next()) {
+                    user.setUserId(resultSet.getInt("UserId"));
+                    user.setFirstName(resultSet.getString("FirstName"));
+                    user.setLastName(resultSet.getString("LastName"));
+                    user.setAddress(resultSet.getString("Address"));
+                    user.setCity(resultSet.getString("City"));
+                    user.setPhone(resultSet.getString("Phone"));
+                    user.setEmail(resultSet.getString("Email"));
+                    user.setPswrd(resultSet.getString("Password"));
+                    user.setAdmin(resultSet.getBoolean("IsAdmin"));
+                    user.setFine(resultSet.getInt("Fine"));
 
-            preparedStatement.setString(1, user.getFirstName());
-            preparedStatement.setString(2, user.getLastName());
-            preparedStatement.setString(3, user.getAddress());
-            preparedStatement.setString(4, user.getCity());
-            preparedStatement.setString(5, user.getPhone());
-            preparedStatement.setString(6, user.getEmail());
-            preparedStatement.setString(7, user.getPswrd());
-            preparedStatement.setBoolean(8, false);
-            preparedStatement.setInt(9, 0);
+                    System.out.println("User with email " + user.getEmail() + " already exists.");
 
-            int rowsAffected = preparedStatement.executeUpdate();
-            if (rowsAffected > 0) {
-                System.out.println("The User has been created successfully ");
+                } else {
 
-                // Retrieve the newly created user by querying the database
-                String selectUserQuery = "SELECT * FROM dbo.Users WHERE Email = ?";
-                try (PreparedStatement selectStatement = connection.prepareStatement(selectUserQuery)) {
-                    selectStatement.setString(1, user.getEmail());
-                    try (ResultSet resultSet = selectStatement.executeQuery()) {
-                        if (resultSet.next()) {
-                            createdUserId = resultSet.getInt("UserId");
-                            user.setUserId(createdUserId);
+                    try (PreparedStatement preparedStatement1 = connection.prepareStatement(createUserQuery)) {
+
+                        preparedStatement1.setString(1, user.getFirstName());
+                        preparedStatement1.setString(2, user.getLastName());
+                        preparedStatement1.setString(3, user.getAddress());
+                        preparedStatement1.setString(4, user.getCity());
+                        preparedStatement1.setString(5, user.getPhone());
+                        preparedStatement1.setString(6, user.getEmail());
+                        preparedStatement1.setString(7, user.getPswrd());
+                        preparedStatement1.setBoolean(8, false);
+                        preparedStatement1.setInt(9, 0);
+
+                        int rowsAffected = preparedStatement1.executeUpdate();
+                        if (rowsAffected > 0) {
+                            System.out.println("The User has been created successfully ");
+
+                            // Retrieve the newly created user by querying the database
+                            String selectUserQuery = "SELECT * FROM dbo.Users WHERE Email = ?";
+                            try (PreparedStatement selectStatement2 = connection.prepareStatement(selectUserQuery)) {
+                                selectStatement2.setString(1, user.getEmail());
+                                try (ResultSet resultSet2 = selectStatement.executeQuery()) {
+                                    if (resultSet2.next()) {
+                                        createdUserId = resultSet2.getInt("UserId");
+                                        user.setUserId(createdUserId);
+                                    } else {
+                                        throw new RuntimeException("Failed to retrieve the newly created user");
+                                    }
+                                }
+                            }
+
+                            int rowCount = insertUserRole(createdUserId);
+
                         } else {
-                            throw new RuntimeException("Failed to retrieve the newly created user");
+                            System.out.println("There is an issue in creating user");
                         }
                     }
                 }
-
-                int rowCount = insertUserRole(createdUserId);
-
-            } else {
-                System.out.println("There is an issue in creating user");
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
         return user;
     }
 
+    
     private int insertUserRole(int createdUserId) {
         int rowCount = 0;
         String createUserRoleQuery = "INSERT INTO dbo.UserRole (UserId, RoleId) VALUES (?,?)";
@@ -564,7 +590,7 @@ public class SLARepositoryImpl implements SLARepository {
     public List<TicketStatus> getStatus() {
         List<TicketStatus> resultList = new ArrayList<>();
         String getStatusQuery = "SELECT * from dbo.StatusLookup";
-        try (Connection connection = dataSource.getConnection();
+        try (Connection connection = DriverManager.getConnection("jdbc:sqlserver://slaticketmanagementsystem.database.windows.net:1433;database=SLATicketManagement","Admin123","Sla123Admin" );
                 PreparedStatement preparedStatement = connection.prepareStatement(getStatusQuery)) {
            
             ResultSet result = preparedStatement.executeQuery();
