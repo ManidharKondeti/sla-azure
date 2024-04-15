@@ -2,6 +2,3 @@
     "connectionStringConfiguredAtRuntime": true,
     "connectionString": "InstrumentationKey=80cecec4-5da8-442f-acb3-28309aed217e;IngestionEndpoint=https://eastus-8.in.applicationinsights.azure.com/;LiveEndpoint=https://eastus.livediagnostics.monitor.azure.com/;ApplicationId=b73d8e89-f469-40c7-8b72-939eb1b78926"
 }
-
-
-    
