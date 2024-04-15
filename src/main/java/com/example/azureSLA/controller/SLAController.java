@@ -32,7 +32,6 @@ public class SLAController {
     @Autowired
     SLAService slaservice;
 
-
     @GetMapping("/msg")
     public String message(){
         return "Testing the Azure Deployment";
