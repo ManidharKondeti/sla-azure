@@ -559,7 +559,6 @@ public class SLARepositoryImpl implements SLARepository {
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
         return user;
     }
 
