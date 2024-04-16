@@ -1,4 +1,4 @@
-# spring:
+spring:
 #   # security:
 #   #   oauth2:
 #   #     client:
@@ -15,11 +15,10 @@
 
 
 # # Add this property to your existing configuration
-#   datasource:
-#     url: jdbc:sqlserver://slaticketmanagementsystem.database.windows.net:1433;database=SLATicketManagement
-#     username: Admin123
-#     password: Sla123Admin
-#     driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
-
+ datasource:
+    url: jdbc:sqlserver://slaticketmanagementsystem.database.windows.net:1433;database=SLATicketManagement
+    username: Admin123
+    password: Sla123Admin
+    driver-class-name: com.microsoft.sqlserver.jdbc.SQLServerDriver
 # server:
 #   port: 8080

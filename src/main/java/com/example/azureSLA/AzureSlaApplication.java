@@ -7,6 +7,7 @@ import com.azure.identity.ClientSecretCredentialBuilder;
 import com.azure.security.keyvault.secrets.SecretClient;
 import com.azure.security.keyvault.secrets.SecretClientBuilder;
 import com.azure.security.keyvault.secrets.models.KeyVaultSecret;
+import com.example.azureSLA.DataSource.dataSourceConfig;
 import com.microsoft.applicationinsights.attach.ApplicationInsights;
 
 @SpringBootApplication
@@ -38,10 +39,15 @@ public class AzureSlaApplication {
 
         // Now you can use the secret value in your application
         System.out.println("Secret Value: " + secretVal);
+        System.out.println("DataSource URL: " + secretValues[0]);
 
-        System.setProperty("spring.datasource.url", secretValues[0]);
-        System.setProperty("spring.datasource.username", secretValues[1].split("=")[1]);
-        System.setProperty("spring.datasource.password", secretValues[2].split("=")[1]);
+        dataSourceConfig.DB_URL= secretValues[0].trim();
+        dataSourceConfig.DB_USERNAME=secretValues[1].split("=")[1];
+        dataSourceConfig.DB_PWD=secretValues[2].split("=")[1];
+
+        //System.setProperty("spring.datasource.url", secretValues[0].trim());
+        //System.setProperty("spring.datasource.username", secretValues[1].split("=")[1]);
+        //System.setProperty("spring.datasource.password", secretValues[2].split("=")[1]);
 
 		SpringApplication.run(AzureSlaApplication.class, args);
 		

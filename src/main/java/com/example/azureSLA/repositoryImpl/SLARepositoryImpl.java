@@ -19,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
+import com.example.azureSLA.DataSource.dataSourceConfig;
 import com.example.azureSLA.model.Comments;
 import com.example.azureSLA.model.Priority;
 import com.example.azureSLA.model.TicketStatus;
@@ -31,15 +32,6 @@ public class SLARepositoryImpl implements SLARepository {
 
     @Autowired
     private DataSource dataSource;
-
-    // @Value("${spring.datasource.url}")
-    // private String url;
-
-    // @Value("${spring.datasource.username}")
-    // private String username;
-
-    // @Value("${spring.datasource.password}")
-    // private String pwd;
 
     @Override
     public Tickets createTicket(Tickets ticket) {
@@ -599,7 +591,7 @@ public class SLARepositoryImpl implements SLARepository {
     public List<TicketStatus> getStatus() {
         List<TicketStatus> resultList = new ArrayList<>();
         String getStatusQuery = "SELECT * from dbo.StatusLookup";
-        try (Connection connection = dataSource.getConnection();
+        try (Connection connection = DriverManager.getConnection(dataSourceConfig.DB_URL, dataSourceConfig.DB_USERNAME, dataSourceConfig.DB_PWD);
                 PreparedStatement preparedStatement = connection.prepareStatement(getStatusQuery)) {
 
             ResultSet result = preparedStatement.executeQuery();
