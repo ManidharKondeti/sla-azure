@@ -1,13 +1,11 @@
 package com.example.azureSLA.repository;
 
-import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
 import com.example.azureSLA.model.Comments;
 import com.example.azureSLA.model.Priority;
 import com.example.azureSLA.model.TicketStatus;
-
 
 import com.example.azureSLA.model.Tickets;
 import com.example.azureSLA.model.Users;
@@ -40,5 +38,5 @@ public interface SLARepository {
     Map<String, Integer> getTicketsCount();
 
     List<Users> getUsers();
-    
+
 }

@@ -1,12 +1,11 @@
 package com.example.azureSLA.controller;
 
-import java.util.Map;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.azure.core.annotation.Get;
 import com.example.azureSLA.model.Comments;
 import com.example.azureSLA.model.Priority;
 import com.example.azureSLA.model.TicketStatus;
@@ -33,13 +31,13 @@ public class SLAController {
     SLAService slaservice;
 
     @GetMapping("/msg")
-    public String message(){
+    public String message() {
         return "Testing the Azure Deployment";
     }
 
     @CrossOrigin(origins = "http://localhost:4200/")
     @PostMapping("/user/create")
-    public Users createUser(@RequestBody Users user){
+    public Users createUser(@RequestBody Users user) {
         Users createUser = new Users();
         try {
             createUser = slaservice.createUser(user);
@@ -49,10 +47,9 @@ public class SLAController {
         return createUser;
     }
 
-    
     @CrossOrigin(origins = "http://localhost:4200/")
     @PostMapping("/ticket/create")
-    public Tickets createTicket(@RequestBody Tickets tickets){
+    public Tickets createTicket(@RequestBody Tickets tickets) {
         Tickets createTicket = new Tickets();
         try {
             createTicket = slaservice.createTicket(tickets);
@@ -63,7 +60,7 @@ public class SLAController {
     }
 
     @GetMapping("/ticket/getAll")
-    public List<Tickets> getTicketDetails(){
+    public List<Tickets> getTicketDetails() {
         List<Tickets> allTickets = new ArrayList<>();
         try {
             allTickets = slaservice.getTicketDetails();
@@ -73,9 +70,8 @@ public class SLAController {
         return allTickets;
     }
 
-
     @GetMapping("/ticket/get/status/{getTicketsByStatusId}")
-    public List<Tickets> getTicketsByStatusId(@PathVariable int getTicketsByStatusId){
+    public List<Tickets> getTicketsByStatusId(@PathVariable int getTicketsByStatusId) {
         List<Tickets> ticketDetailsById = new ArrayList<>();
         try {
             ticketDetailsById = slaservice.getTicketsByStatusId(getTicketsByStatusId);
@@ -85,8 +81,8 @@ public class SLAController {
         return ticketDetailsById;
     }
 
-     @GetMapping("/ticket/get/assign/{getTicketsAssignedTo}")
-    public List<Tickets> getTicketsAssignedTo(@PathVariable int getTicketsAssignedTo){
+    @GetMapping("/ticket/get/assign/{getTicketsAssignedTo}")
+    public List<Tickets> getTicketsAssignedTo(@PathVariable int getTicketsAssignedTo) {
         List<Tickets> ticketsAssignedTo = new ArrayList<>();
         try {
             ticketsAssignedTo = slaservice.getTicketsAssignedTo(getTicketsAssignedTo);
@@ -97,7 +93,7 @@ public class SLAController {
     }
 
     @GetMapping("/ticket/get/{getTicketsCreatedBy}")
-    public List<Tickets> getTicketsCreatedBy(@PathVariable int getTicketsCreatedBy){
+    public List<Tickets> getTicketsCreatedBy(@PathVariable int getTicketsCreatedBy) {
         List<Tickets> ticketsCreatedBy = new ArrayList<>();
         try {
             ticketsCreatedBy = slaservice.getTicketsCreatedBy(getTicketsCreatedBy);
@@ -107,9 +103,8 @@ public class SLAController {
         return ticketsCreatedBy;
     }
 
-
     @PostMapping("/ticket/addcomment")
-    public Comments addComments(@RequestBody Comments comment){
+    public Comments addComments(@RequestBody Comments comment) {
         Comments addComments = new Comments();
         try {
             addComments = slaservice.addComments(comment);
@@ -119,82 +114,74 @@ public class SLAController {
         return addComments;
     }
 
-
     @PatchMapping("/ticket/{ticketId}/priority/{priorityId}")
-    public void updPriority(@PathVariable int ticketId, @PathVariable int priorityId){
+    public void updPriority(@PathVariable int ticketId, @PathVariable int priorityId) {
         try {
-            slaservice.updPriority(ticketId,priorityId);
+            slaservice.updPriority(ticketId, priorityId);
         } catch (Exception e) {
             System.err.println("Error in Creating a new Ticket in repository" + e.getMessage());
         }
     }
 
     @PatchMapping("/ticket/{ticketId}/status/{statusId}")
-    public void updStatus(@PathVariable int ticketId, @PathVariable int statusId){
+    public void updStatus(@PathVariable int ticketId, @PathVariable int statusId) {
         try {
-            slaservice.updStatus(ticketId,statusId);
+            slaservice.updStatus(ticketId, statusId);
         } catch (Exception e) {
             System.err.println("Error in Creating a new Ticket in repository" + e.getMessage());
         }
     }
 
     @PatchMapping("ticket/{ticketId}/updassignTo/{assginUserId}")
-    public void updAssignTo(@PathVariable int ticketId, @PathVariable int assginUserId){
+    public void updAssignTo(@PathVariable int ticketId, @PathVariable int assginUserId) {
         try {
-           slaservice.updAssignTo(ticketId,assginUserId);
+            slaservice.updAssignTo(ticketId, assginUserId);
         } catch (Exception e) {
             System.err.println("Error in Creating a new Ticket in repository" + e.getMessage());
         }
     }
 
     @GetMapping("/getTicketsCount")
-    public Map<String, Integer> getTicketsCount(){
+    public Map<String, Integer> getTicketsCount() {
         Map<String, Integer> ticketsCountMap = new HashMap<>();
         try {
             ticketsCountMap = slaservice.getTicketsCount();
         } catch (Exception e) {
-             System.err.println("Error in fetching Tickets count from  repository" + e.getMessage());
+            System.err.println("Error in fetching Tickets count from  repository" + e.getMessage());
         }
         return ticketsCountMap;
     }
 
-    //display the status
     @GetMapping("/getStatus")
-    public List<TicketStatus> getStatus(){
+    public List<TicketStatus> getStatus() {
         List<TicketStatus> statusList = new ArrayList<>();
-        try{
-           statusList = slaservice.getStatus();
-        }catch (Exception e) {
-             System.err.println("Error in fetching Status from  repository" + e.getMessage());
+        try {
+            statusList = slaservice.getStatus();
+        } catch (Exception e) {
+            System.err.println("Error in fetching Status from  repository" + e.getMessage());
         }
         return statusList;
     }
 
     @GetMapping("/getPriority")
-    public List<Priority> getPriorities(){
+    public List<Priority> getPriorities() {
         List<Priority> priorityList = new ArrayList<>();
-        try{
-           priorityList = slaservice.getPriorities();
-        }catch (Exception e) {
-             System.err.println("Error in fetching Priorites from  repository" + e.getMessage());
+        try {
+            priorityList = slaservice.getPriorities();
+        } catch (Exception e) {
+            System.err.println("Error in fetching Priorites from  repository" + e.getMessage());
         }
         return priorityList;
     }
 
     @GetMapping("/user/getAll")
-    public List<Users> getUsers(){
+    public List<Users> getUsers() {
         List<Users> usersList = new ArrayList<>();
-        try{
-           usersList = slaservice.getUsers();
-        }catch (Exception e) {
-             System.err.println("Error in fetching users from  repository" + e.getMessage());
+        try {
+            usersList = slaservice.getUsers();
+        } catch (Exception e) {
+            System.err.println("Error in fetching users from  repository" + e.getMessage());
         }
         return usersList;
     }
-
-    //tickets created by
-    //getAllstatuses
-    //getAllpriori
-    //getItsupport roles
-    //getTicketbyid
 }

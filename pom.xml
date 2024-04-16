@@ -96,6 +96,20 @@
             <artifactId>applicationinsights-core</artifactId>
             <version>3.5.1</version>
         </dependency>
+		<!-- Azure Key Vault library -->
+		<dependency>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-security-keyvault-secrets</artifactId>
+			<version>4.8.1</version> 
+		</dependency>
+		<!-- Azure Identity library for authentication -->
+		<dependency>
+			<groupId>com.azure</groupId>
+			<artifactId>azure-identity</artifactId>
+			<version>1.11.4</version> 
+		</dependency>
+
+
 
 	</dependencies>
 

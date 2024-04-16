@@ -1,13 +1,11 @@
 package com.example.azureSLA.serviceImpl;
 
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
-//import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import com.example.azureSLA.model.Comments;
@@ -23,15 +21,6 @@ public class SLAServiceImpl implements SLAService {
 
     @Autowired
     SLARepository slarepository;
-
-    // @Override
-    // public void saveUserDetails(OAuth2User principal) {
-    //     try {
-    //         slarepository.saveUserDetails(principal);
-    //     } catch (SQLException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
 
     @Override
     public Tickets createTicket(Tickets ticket) {
@@ -49,7 +38,7 @@ public class SLAServiceImpl implements SLAService {
         List<Tickets> getTicketDetails = new ArrayList<>();
         getTicketDetails = slarepository.getTicketDetails();
         return getTicketDetails;
-        
+
     }
 
     @Override
@@ -68,27 +57,27 @@ public class SLAServiceImpl implements SLAService {
         } else {
             return addComments;
         }
-       
+
     }
 
     @Override
-    public void updPriority(int ticketId,int priorityId) {
-        if (ticketId != 0 && priorityId !=0) {
-            slarepository.updPriority(ticketId,priorityId);
+    public void updPriority(int ticketId, int priorityId) {
+        if (ticketId != 0 && priorityId != 0) {
+            slarepository.updPriority(ticketId, priorityId);
         }
     }
 
     @Override
     public void updStatus(int ticketId, int statusId) {
-        if (ticketId != 0 && statusId !=0) {
+        if (ticketId != 0 && statusId != 0) {
             slarepository.updStatus(ticketId, statusId);
         }
     }
 
     @Override
     public void updAssignTo(int ticketId, int assginUserId) {
-       if (ticketId != 0 && assginUserId !=0) {
-           slarepository.updAssignTo(ticketId,assginUserId);
+        if (ticketId != 0 && assginUserId != 0) {
+            slarepository.updAssignTo(ticketId, assginUserId);
         }
     }
 
@@ -119,16 +108,15 @@ public class SLAServiceImpl implements SLAService {
 
     @Override
     public List<TicketStatus> getStatus() {
-        List<TicketStatus> list= new ArrayList<>();
-        list= slarepository.getStatus();
+        List<TicketStatus> list = new ArrayList<>();
+        list = slarepository.getStatus();
         return list;
     }
-    
 
     @Override
     public List<Priority> getPriorities() {
-        List<Priority> list= new ArrayList<>();
-        list= slarepository.getPriorities();
+        List<Priority> list = new ArrayList<>();
+        list = slarepository.getPriorities();
         return list;
     }
 

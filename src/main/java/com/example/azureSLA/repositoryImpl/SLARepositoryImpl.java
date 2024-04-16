@@ -16,6 +16,7 @@ import java.util.Map;
 import javax.sql.DataSource;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Repository;
 
 import com.example.azureSLA.model.Comments;
@@ -31,6 +32,15 @@ public class SLARepositoryImpl implements SLARepository {
     @Autowired
     private DataSource dataSource;
 
+    @Value("${spring.datasource.url}")
+    private String url;
+
+    @Value("${spring.datasource.username}")
+    private String username;
+
+    @Value("${spring.datasource.password}")
+    private String pwd;
+
     @Override
     public Tickets createTicket(Tickets ticket) {
         String insertQuery = "INSERT INTO dbo.Tickets (Title, Description, StatusId, PriorityId, CreatedBy, AssignedTo, CreatedAt, DueDate, isEmailSent) "
@@ -44,7 +54,7 @@ public class SLARepositoryImpl implements SLARepository {
             preparedStatement.setInt(3, 1);
             preparedStatement.setInt(4, ticket.getPriorityId());
             preparedStatement.setInt(5, ticket.getCreatedby());
-            preparedStatement.setInt(6, 2);//AdminId
+            preparedStatement.setInt(6, 2);// AdminId
 
             Date createdDate = new Date();
             java.sql.Timestamp sqlCreatedDate = convertDate(createdDate);
@@ -85,7 +95,7 @@ public class SLARepositoryImpl implements SLARepository {
     @Override
     public List<Tickets> getTicketDetails() {
         List<Tickets> resultList = new ArrayList<>();
-        //String getTicketsQuery = "SELECT * FROM dbo.Tickets";
+        // String getTicketsQuery = "SELECT * FROM dbo.Tickets";
         String getAllTicketsQuery = "SELECT " +
                 "    t.TicketId," +
                 "    t.Title, " +
@@ -112,7 +122,7 @@ public class SLARepositoryImpl implements SLARepository {
                 " JOIN " +
                 "    dbo.Users u ON t.CreatedBy = u.UserId" +
                 " JOIN " +
-                "    dbo.Users u2 ON t.AssignedTo = u2.UserId" ;
+                "    dbo.Users u2 ON t.AssignedTo = u2.UserId";
 
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(getAllTicketsQuery)) {
@@ -151,7 +161,7 @@ public class SLARepositoryImpl implements SLARepository {
     @Override
     public List<Tickets> getTicketsByStatusId(int id) {
         List<Tickets> resultList = new ArrayList<>();
-        //String getTicketDetailsById = "SELECT * FROM dbo.Tickets where StatusId = ?";
+        // String getTicketDetailsById = "SELECT * FROM dbo.Tickets where StatusId = ?";
         String getTicketsByStatusIdQuery = "SELECT " +
                 "    t.TicketId," +
                 "    t.Title, " +
@@ -342,7 +352,7 @@ public class SLARepositoryImpl implements SLARepository {
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(updStatusQuery)) {
 
-            preparedStatement.setInt(1, 2);//changing to inprogress
+            preparedStatement.setInt(1, 2);// changing to inprogress
             preparedStatement.setInt(2, assginUserId);
             preparedStatement.setInt(3, ticketId);
 
@@ -361,7 +371,8 @@ public class SLARepositoryImpl implements SLARepository {
     public List<Tickets> getTicketsAssignedTo(int assignedTo) {
 
         List<Tickets> resultList = new ArrayList<>();
-        //String getTicketDetailsById = "SELECT * FROM dbo.Tickets where AssignedTo = ?";
+        // String getTicketDetailsById = "SELECT * FROM dbo.Tickets where AssignedTo =
+        // ?";
         String getTicketsAssignedToQuery = "SELECT " +
                 "    t.TicketId," +
                 "    t.Title, " +
@@ -562,7 +573,6 @@ public class SLARepositoryImpl implements SLARepository {
         return user;
     }
 
-    
     private int insertUserRole(int createdUserId) {
         int rowCount = 0;
         String createUserRoleQuery = "INSERT INTO dbo.UserRole (UserId, RoleId) VALUES (?,?)";
@@ -589,15 +599,15 @@ public class SLARepositoryImpl implements SLARepository {
     public List<TicketStatus> getStatus() {
         List<TicketStatus> resultList = new ArrayList<>();
         String getStatusQuery = "SELECT * from dbo.StatusLookup";
-        try (Connection connection = DriverManager.getConnection("jdbc:sqlserver://slaticketmanagementsystem.database.windows.net:1433;database=SLATicketManagement","Admin123","Sla123Admin" );
+        try (Connection connection = DriverManager.getConnection(url, username, pwd);
                 PreparedStatement preparedStatement = connection.prepareStatement(getStatusQuery)) {
-           
+
             ResultSet result = preparedStatement.executeQuery();
             while (result.next()) {
                 TicketStatus status = new TicketStatus();
                 status.setStatusId(result.getInt("statusId"));
                 status.setDescription(result.getString("description"));
-                
+
                 resultList.add(status);
             }
         } catch (SQLException e) {
@@ -606,20 +616,19 @@ public class SLARepositoryImpl implements SLARepository {
         return resultList;
     }
 
-
     @Override
     public List<Priority> getPriorities() {
         List<Priority> resultList = new ArrayList<>();
         String getPrioritiesQuery = "SELECT * from dbo.PriorityLookup";
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(getPrioritiesQuery)) {
-           
+
             ResultSet result = preparedStatement.executeQuery();
             while (result.next()) {
                 Priority priority = new Priority();
                 priority.setPriorityId(result.getInt("priorityId"));
                 priority.setDescription(result.getString("description"));
-                
+
                 resultList.add(priority);
             }
         } catch (SQLException e) {
@@ -631,36 +640,36 @@ public class SLARepositoryImpl implements SLARepository {
     @Override
     public Map<String, Integer> getTicketsCount() {
         String query = "SELECT sl.Description AS Status, COUNT(t.TicketId) AS TicketCount " +
-                   "FROM dbo.Tickets t " +
-                   "RIGHT JOIN dbo.StatusLookup sl ON t.StatusId = sl.StatusId " +
-                   "GROUP BY sl.Description";
+                "FROM dbo.Tickets t " +
+                "RIGHT JOIN dbo.StatusLookup sl ON t.StatusId = sl.StatusId " +
+                "GROUP BY sl.Description";
 
-    Map<String, Integer> ticketCounts = new HashMap<>();
+        Map<String, Integer> ticketCounts = new HashMap<>();
 
-    try (Connection connection = dataSource.getConnection();
-         PreparedStatement preparedStatement = connection.prepareStatement(query);
-         ResultSet resultSet = preparedStatement.executeQuery()) {
+        try (Connection connection = dataSource.getConnection();
+                PreparedStatement preparedStatement = connection.prepareStatement(query);
+                ResultSet resultSet = preparedStatement.executeQuery()) {
 
-        while (resultSet.next()) {
-            String status = resultSet.getString("Status");
-            int count = resultSet.getInt("TicketCount");
-            ticketCounts.put(status, count);
+            while (resultSet.next()) {
+                String status = resultSet.getString("Status");
+                int count = resultSet.getInt("TicketCount");
+                ticketCounts.put(status, count);
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
 
-    } catch (SQLException e) {
-        e.printStackTrace();
-    }
-
-    return ticketCounts;
+        return ticketCounts;
     }
 
     @Override
     public List<Users> getUsers() {
-         List<Users> usersList = new ArrayList<>();
+        List<Users> usersList = new ArrayList<>();
         String userListQuery = "SELECT * from dbo.Users";
         try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(userListQuery)) {
-           
+
             ResultSet result = preparedStatement.executeQuery();
             while (result.next()) {
                 Users user = new Users();
@@ -673,13 +682,12 @@ public class SLARepositoryImpl implements SLARepository {
                 user.setEmail(result.getString("email"));
                 user.setPhone(result.getString("phone"));
 
-                
                 usersList.add(user);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
         return usersList;
-        
+
     }
 }
