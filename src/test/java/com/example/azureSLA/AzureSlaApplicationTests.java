@@ -9,5 +9,6 @@ class AzureSlaApplicationTests {
 	@Test
 	void contextLoads() {
 	}
+
 	
 }
