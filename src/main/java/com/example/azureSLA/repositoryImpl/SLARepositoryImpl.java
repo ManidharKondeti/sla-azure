@@ -32,14 +32,14 @@ public class SLARepositoryImpl implements SLARepository {
     @Autowired
     private DataSource dataSource;
 
-    @Value("${spring.datasource.url}")
-    private String url;
+    // @Value("${spring.datasource.url}")
+    // private String url;
 
-    @Value("${spring.datasource.username}")
-    private String username;
+    // @Value("${spring.datasource.username}")
+    // private String username;
 
-    @Value("${spring.datasource.password}")
-    private String pwd;
+    // @Value("${spring.datasource.password}")
+    // private String pwd;
 
     @Override
     public Tickets createTicket(Tickets ticket) {
@@ -599,7 +599,7 @@ public class SLARepositoryImpl implements SLARepository {
     public List<TicketStatus> getStatus() {
         List<TicketStatus> resultList = new ArrayList<>();
         String getStatusQuery = "SELECT * from dbo.StatusLookup";
-        try (Connection connection = DriverManager.getConnection(url, username, pwd);
+        try (Connection connection = dataSource.getConnection();
                 PreparedStatement preparedStatement = connection.prepareStatement(getStatusQuery)) {
 
             ResultSet result = preparedStatement.executeQuery();
