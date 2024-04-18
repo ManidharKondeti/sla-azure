@@ -23,19 +23,20 @@ import com.example.azureSLA.model.Users;
 import com.example.azureSLA.service.SLAService;
 
 @RestController
+@CrossOrigin(origins = {"http://localhost:4200", "https://newslaui.azurewebsites.net"})
 @RequestMapping("/sla")
-@CrossOrigin(origins = "http://localhost:4200")
 public class SLAController {
 
     @Autowired
     SLAService slaservice;
 
+    @CrossOrigin(origins = {"http://localhost:4200", "https://newslaui.azurewebsites.net"})
     @GetMapping("/msg")
     public String message() {
         return "Testing the Azure Deployment";
     }
 
-    @CrossOrigin(origins = "http://localhost:4200/")
+    @CrossOrigin(origins = {"http://localhost:4200", "https://newslaui.azurewebsites.net"})
     @PostMapping("/user/create")
     public Users createUser(@RequestBody Users user) {
         Users createUser = new Users();
@@ -47,7 +48,7 @@ public class SLAController {
         return createUser;
     }
 
-    @CrossOrigin(origins = "http://localhost:4200/")
+    @CrossOrigin(origins = {"http://localhost:4200", "https://newslaui.azurewebsites.net"})
     @PostMapping("/ticket/create")
     public Tickets createTicket(@RequestBody Tickets tickets) {
         Tickets createTicket = new Tickets();
@@ -59,6 +60,7 @@ public class SLAController {
         return createTicket;
     }
 
+    @CrossOrigin(origins = {"http://localhost:4200", "https://newslaui.azurewebsites.net"})
     @GetMapping("/ticket/getAll")
     public List<Tickets> getTicketDetails() {
         List<Tickets> allTickets = new ArrayList<>();
@@ -70,6 +72,7 @@ public class SLAController {
         return allTickets;
     }
 
+    @CrossOrigin(origins = {"http://localhost:4200", "https://newslaui.azurewebsites.net"})
     @GetMapping("/ticket/get/status/{getTicketsByStatusId}")
     public List<Tickets> getTicketsByStatusId(@PathVariable int getTicketsByStatusId) {
         List<Tickets> ticketDetailsById = new ArrayList<>();
@@ -81,6 +84,7 @@ public class SLAController {
         return ticketDetailsById;
     }
 
+    @CrossOrigin(origins = {"http://localhost:4200", "https://newslaui.azurewebsites.net"})
     @GetMapping("/ticket/get/assign/{getTicketsAssignedTo}")
     public List<Tickets> getTicketsAssignedTo(@PathVariable int getTicketsAssignedTo) {
         List<Tickets> ticketsAssignedTo = new ArrayList<>();
@@ -92,6 +96,7 @@ public class SLAController {
         return ticketsAssignedTo;
     }
 
+    @CrossOrigin(origins = {"http://localhost:4200", "https://newslaui.azurewebsites.net"})
     @GetMapping("/ticket/get/{getTicketsCreatedBy}")
     public List<Tickets> getTicketsCreatedBy(@PathVariable int getTicketsCreatedBy) {
         List<Tickets> ticketsCreatedBy = new ArrayList<>();
@@ -103,6 +108,7 @@ public class SLAController {
         return ticketsCreatedBy;
     }
 
+    @CrossOrigin(origins = {"http://localhost:4200", "https://newslaui.azurewebsites.net"})
     @PostMapping("/ticket/addcomment")
     public Comments addComments(@RequestBody Comments comment) {
         Comments addComments = new Comments();
@@ -114,6 +120,7 @@ public class SLAController {
         return addComments;
     }
 
+    @CrossOrigin(origins = {"http://localhost:4200", "https://newslaui.azurewebsites.net"})
     @PatchMapping("/ticket/{ticketId}/priority/{priorityId}")
     public void updPriority(@PathVariable int ticketId, @PathVariable int priorityId) {
         try {
@@ -123,6 +130,7 @@ public class SLAController {
         }
     }
 
+    @CrossOrigin(origins = {"http://localhost:4200", "https://newslaui.azurewebsites.net"})
     @PatchMapping("/ticket/{ticketId}/status/{statusId}")
     public void updStatus(@PathVariable int ticketId, @PathVariable int statusId) {
         try {
@@ -132,6 +140,7 @@ public class SLAController {
         }
     }
 
+    @CrossOrigin(origins = {"http://localhost:4200", "https://newslaui.azurewebsites.net"})
     @PatchMapping("ticket/{ticketId}/updassignTo/{assginUserId}")
     public void updAssignTo(@PathVariable int ticketId, @PathVariable int assginUserId) {
         try {
@@ -141,6 +150,7 @@ public class SLAController {
         }
     }
 
+    @CrossOrigin(origins = {"http://localhost:4200", "https://newslaui.azurewebsites.net"})
     @GetMapping("/getTicketsCount")
     public Map<String, Integer> getTicketsCount() {
         Map<String, Integer> ticketsCountMap = new HashMap<>();
@@ -152,6 +162,7 @@ public class SLAController {
         return ticketsCountMap;
     }
 
+    @CrossOrigin(origins = {"http://localhost:4200", "https://newslaui.azurewebsites.net"})
     @GetMapping("/getStatus")
     public List<TicketStatus> getStatus() {
         List<TicketStatus> statusList = new ArrayList<>();
@@ -163,6 +174,7 @@ public class SLAController {
         return statusList;
     }
 
+    @CrossOrigin(origins = {"http://localhost:4200", "https://newslaui.azurewebsites.net"})
     @GetMapping("/getPriority")
     public List<Priority> getPriorities() {
         List<Priority> priorityList = new ArrayList<>();
@@ -174,6 +186,7 @@ public class SLAController {
         return priorityList;
     }
 
+    @CrossOrigin(origins = {"http://localhost:4200", "https://newslaui.azurewebsites.net"})
     @GetMapping("/user/getAll")
     public List<Users> getUsers() {
         List<Users> usersList = new ArrayList<>();

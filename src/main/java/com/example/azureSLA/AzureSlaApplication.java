@@ -45,10 +45,6 @@ public class AzureSlaApplication {
         dataSourceConfig.DB_USERNAME=secretValues[1].split("=")[1];
         dataSourceConfig.DB_PWD=secretValues[2].split("=")[1];
 
-        //System.setProperty("spring.datasource.url", secretValues[0].trim());
-        //System.setProperty("spring.datasource.username", secretValues[1].split("=")[1]);
-        //System.setProperty("spring.datasource.password", secretValues[2].split("=")[1]);
-
 		SpringApplication.run(AzureSlaApplication.class, args);
 		
 	}
