@@ -17,12 +17,12 @@ public class AzureSlaApplication {
 		//configureApplicationInsights();
 		ApplicationInsights.attach();
 
-        String keyVaultName = "slavault";
+        String keyVaultName = "slavault-dbt";
         String keyVaultUri = "https://" + keyVaultName + ".vault.azure.net";
         ClientSecretCredential cc = new ClientSecretCredentialBuilder()
                                     .tenantId("08d2293e-cece-4727-890b-cab1fadeed57")
                                     .clientId("17b68e0d-04e3-47d9-9a0d-cf8c83203e59")
-                                    .clientSecret("wRC8Q~5Pj0M5k_CQBt3HG41Zbz7nekjqLhsj3bLl").build();
+                                    .clientSecret("XrM8Q~eyjdfhDT5K1vORpVOOq2xKIro6W-4U.djr").build();
         
         // Use the Azure credential to authenticate with Azure
         SecretClient secretClient = new SecretClientBuilder()
